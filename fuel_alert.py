@@ -9,7 +9,7 @@ CITY = "Timisoara"
 FUEL_TYPE = "motorina"
 
 # Trimite alerta dacă prețul este egal sau mai mic decât această valoare
-PRICE_LIMIT = 9.80
+PRICE_LIMIT = 12
 
 # Telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
