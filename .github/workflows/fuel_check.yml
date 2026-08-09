@@ -1,7 +1,8 @@
 name: Fuel Price Check
 
 on:
-  workflow_dispatch:
+  schedule:
+  - cron: "0 */2 * * *"
 
 jobs:
   check-fuel-price:
