@@ -1,0 +1,5 @@
+CITY = "Timisoara"
+FUEL_TYPE = "motorina"
+PRICE_LIMIT = 9.80
+MAX_DISTANCE_KM = 10
+TOP_STATIONS = 5
