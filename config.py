@@ -1,5 +1,16 @@
+# ==============================
+# CONFIGURARE BOT
+# ==============================
+
+# Orașul monitorizat
 CITY = "Timisoara"
+
+# Tipul de carburant
 FUEL_TYPE = "motorina"
-PRICE_LIMIT = 11
-MAX_DISTANCE_KM = 10
-TOP_STATIONS = 5
+
+# Trimite notificare când prețul este egal sau sub acest prag
+PRICE_LIMIT = 9.80
+
+# Frecvența verificării este configurată în:
+# .github/workflows/fuel_check.yml
+# momentan: o verificare la fiecare 2 ore
