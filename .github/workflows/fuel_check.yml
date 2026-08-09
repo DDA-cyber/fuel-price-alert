@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: "0 */2 * * *"
 
+permissions:
+  contents: write
+
 jobs:
   check-fuel-price:
     runs-on: ubuntu-latest
