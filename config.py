@@ -9,7 +9,7 @@ CITY = "Timisoara"
 FUEL_TYPE = "motorina"
 
 # Trimite notificare când prețul este egal sau sub acest prag
-PRICE_LIMIT = 11
+PRICE_LIMIT = 10
 
 # Frecvența verificării este configurată în:
 # .github/workflows/fuel_check.yml
