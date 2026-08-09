@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+from datetime import datetime, timezone
 
 from config import CITY, FUEL_TYPE, PRICE_LIMIT
 
@@ -11,9 +12,14 @@ from config import CITY, FUEL_TYPE, PRICE_LIMIT
 
 DATA_FILE = "fuel_data.json"
 
+# Numărul maxim de verificări păstrate în istoric
+MAX_HISTORY = 500
+
+# Telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
+# API PretCarburant
 API_URL = "https://pretcarburant.ro/api/v1/preturi"
 
 
@@ -50,39 +56,79 @@ def get_fuel_price():
 
 
 # ==============================
-# ISTORIC
+# CITIRE DATE
 # ==============================
 
-def load_previous_price():
+def load_data():
 
     if not os.path.exists(DATA_FILE):
-        return None
+        return {
+            "last_price": None,
+            "history": []
+        }
 
     try:
 
         with open(DATA_FILE, "r", encoding="utf-8") as file:
             data = json.load(file)
 
-        return data.get("last_price")
+        # Compatibilitate cu fișierul vechi
+        if "last_price" not in data:
+            data["last_price"] = None
+
+        if "history" not in data:
+            data["history"] = []
+
+        return data
 
     except Exception:
 
-        return None
+        return {
+            "last_price": None,
+            "history": []
+        }
 
 
-def save_current_price(price):
+# ==============================
+# SALVARE DATE
+# ==============================
 
-    data = {
-        "last_price": price
-    }
+def save_data(data):
 
     with open(DATA_FILE, "w", encoding="utf-8") as file:
 
         json.dump(
             data,
             file,
-            indent=4
+            indent=4,
+            ensure_ascii=False
         )
+
+
+# ==============================
+# ADAUGĂ ÎN ISTORIC
+# ==============================
+
+def add_history(data, price):
+
+    timestamp = datetime.now(
+        timezone.utc
+    ).strftime("%Y-%m-%d %H:%M:%S UTC")
+
+    entry = {
+        "timestamp": timestamp,
+        "city": CITY,
+        "fuel_type": FUEL_TYPE,
+        "price": price
+    }
+
+    data["history"].append(entry)
+
+    # Păstrăm doar ultimele MAX_HISTORY înregistrări
+    data["history"] = data["history"][-MAX_HISTORY:]
+
+    # Actualizăm ultimul preț
+    data["last_price"] = price
 
 
 # ==============================
@@ -130,7 +176,9 @@ def main():
 
     current_price = get_fuel_price()
 
-    previous_price = load_previous_price()
+    data = load_data()
+
+    previous_price = data.get("last_price")
 
     print(f"📍 Oraș: {CITY}")
     print(f"⛽ Carburant: {FUEL_TYPE}")
@@ -150,13 +198,15 @@ def main():
     if previous_price is None:
 
         print(
-            "ℹ️ Nu există încă un "
-            "preț anterior."
+            "ℹ️ Prima verificare."
         )
 
-        save_current_price(
+        add_history(
+            data,
             current_price
         )
+
+        save_data(data)
 
         if current_price <= PRICE_LIMIT:
 
@@ -185,6 +235,15 @@ def main():
         print(
             "➡️ Prețul nu s-a schimbat."
         )
+
+        # Chiar dacă prețul nu s-a schimbat,
+        # păstrăm verificarea în istoric.
+        add_history(
+            data,
+            current_price
+        )
+
+        save_data(data)
 
         return
 
@@ -254,11 +313,19 @@ def main():
         )
 
     # ==============================
-    # SALVĂM PREȚUL
+    # SALVĂM ÎN ISTORIC
     # ==============================
 
-    save_current_price(
+    add_history(
+        data,
         current_price
+    )
+
+    save_data(data)
+
+    print(
+        f"💾 Istoric actualizat: "
+        f"{len(data['history'])} înregistrări."
     )
 
 
