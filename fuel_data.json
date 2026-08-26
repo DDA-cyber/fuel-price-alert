@@ -408,6 +408,12 @@
             "city": "Timisoara",
             "fuel_type": "motorina",
             "price": 10.14
+        },
+        {
+            "timestamp": "2026-08-26 14:27:22 UTC",
+            "city": "Timisoara",
+            "fuel_type": "motorina",
+            "price": 10.14
         }
     ]
 }
