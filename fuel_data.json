@@ -1,5 +1,5 @@
 {
-    "last_price": 10.37,
+    "last_price": 10.44,
     "history": [
         {
             "timestamp": "2026-08-09 10:47:41 UTC",
@@ -786,6 +786,12 @@
             "city": "Timisoara",
             "fuel_type": "motorina",
             "price": 10.37
+        },
+        {
+            "timestamp": "2026-09-13 11:25:20 UTC",
+            "city": "Timisoara",
+            "fuel_type": "motorina",
+            "price": 10.44
         }
     ]
 }
